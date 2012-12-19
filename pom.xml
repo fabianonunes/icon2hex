@@ -57,5 +57,10 @@
 			<artifactId>jopt-simple</artifactId>
 			<version>4.4-beta-3</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
 	</dependencies>
 </project>
