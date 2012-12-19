@@ -19,57 +19,54 @@ import org.apache.commons.codec.binary.Hex;
 
 public class Icon2Hex {
 
-	public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
-		OptionSet options = parseArgs(args);
-		
-		File input = (File) options.valueOf("i");
+	OptionSet options = parseArgs(args);
 
-		BufferedImage image = ImageIO.read(input);
+	File input = (File) options.valueOf("i");
 
-		BufferedImage bi = new BufferedImage(image.getWidth(),
-				image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+	BufferedImage image = ImageIO.read(input);
 
-		ColorConvertOp xformOp = new ColorConvertOp(null);
-		xformOp.filter(image, bi);
+	BufferedImage bi = new BufferedImage(image.getWidth(),
+		image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-		WritableRaster raster = bi.getRaster();
-		DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
+	ColorConvertOp xformOp = new ColorConvertOp(null);
+	xformOp.filter(image, bi);
 
-		int[] intData = data.getData();
+	WritableRaster raster = bi.getRaster();
+	DataBufferInt data = (DataBufferInt) raster.getDataBuffer();
 
-		ByteBuffer byteBuffer = ByteBuffer.allocate(intData.length * 4);
-		IntBuffer intBuffer = byteBuffer.asIntBuffer();
-		intBuffer.put(intData);
+	int[] intData = data.getData();
 
-		byte[] array = byteBuffer.array();
+	ByteBuffer byteBuffer = ByteBuffer.allocate(intData.length * 4);
+	IntBuffer intBuffer = byteBuffer.asIntBuffer();
+	intBuffer.put(intData);
 
-		System.out.println(Hex.encodeHex(array));
+	byte[] array = byteBuffer.array();
 
+	System.out.println(Hex.encodeHex(array));
+
+    }
+
+    private static OptionSet parseArgs(String... args) throws IOException {
+
+	OptionParser parser = new OptionParser() {
+	    {
+		accepts("i", "input image file").withRequiredArg()
+			.ofType(File.class).describedAs("input").required();
+		accepts("help").forHelp();
+	    }
+	};
+
+	try {
+	    return parser.parse(args);
+	} catch (OptionException e) {
+	    parser.printHelpOn(System.out);
+	    System.exit(1);
 	}
 
-	private static OptionSet parseArgs(String... args) throws IOException {
+	return null;
 
-		OptionParser parser = new OptionParser() {
-			{
-
-				accepts("i", "input image file").withRequiredArg()
-						.ofType(File.class).describedAs("input").required();
-
-				accepts("help").forHelp();
-
-			}
-		};
-
-		try {
-			return parser.parse(args);
-		} catch (OptionException e) {
-			parser.printHelpOn(System.out);
-			System.exit(1);
-		}
-
-		return null;
-
-	}
+    }
 
 }
